@@ -26,12 +26,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.sp
+import com.pavanpm.spanwiz.library.SpanWiz.Companion.URL_TAG
 import com.pavanpm.spanwiz.library.models.TextWithSpans
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 
 
 class SpanWiz(private val moshi: Moshi) {
+
+    companion object {
+        const val URL_TAG = "URL"
+    }
 
     fun applyToAnnotatedString(jsonString: String): AnnotatedString? {
         val json = parseJson(jsonString) ?: return null
@@ -58,9 +63,9 @@ class SpanWiz(private val moshi: Moshi) {
 
         textWithSpans.spans.forEach { span ->
             val styleSpan = when (span.style) {
-                TextSpanType.BOLD -> StyleSpan(Typeface.BOLD)
-                TextSpanType.ITALIC -> StyleSpan(Typeface.ITALIC)
-                TextSpanType.UNDERLINE -> StyleSpan(Typeface.BOLD)
+                TextSpanType.Bold -> StyleSpan(Typeface.BOLD)
+                TextSpanType.Italic -> StyleSpan(Typeface.ITALIC)
+                TextSpanType.Underline -> StyleSpan(Typeface.BOLD)
                 else -> null
             }
             styleSpan?.let {
@@ -81,17 +86,17 @@ class SpanWiz(private val moshi: Moshi) {
             append(textWithSpans.text)
             textWithSpans.spans.forEach { span ->
                 val spanStyle = when (span.style) {
-                    TextSpanType.BOLD -> SpanStyle(fontWeight = FontWeight.Bold)
-                    TextSpanType.ITALIC -> SpanStyle(fontStyle = FontStyle.Italic)
-                    TextSpanType.UNDERLINE -> SpanStyle(textDecoration = TextDecoration.Underline)
-                    TextSpanType.STRIKETHROUGH -> SpanStyle(textDecoration = TextDecoration.LineThrough)
-                    TextSpanType.COLOR -> span.color?.let { SpanStyle(color = getColor(it)) }
+                    TextSpanType.Bold -> SpanStyle(fontWeight = FontWeight.Bold)
+                    TextSpanType.Italic -> SpanStyle(fontStyle = FontStyle.Italic)
+                    TextSpanType.Underline -> SpanStyle(textDecoration = TextDecoration.Underline)
+                    TextSpanType.Strikethrough -> SpanStyle(textDecoration = TextDecoration.LineThrough)
+                    TextSpanType.Color -> span.color?.let { SpanStyle(color = getColor(it)) }
 
-                    TextSpanType.BACKGROUND_COLOR -> span.backgroundColor?.let {
+                    TextSpanType.BackgroundColor -> span.backgroundColor?.let {
                         SpanStyle(background = getColor(it))
                     }
 
-                    TextSpanType.FONT_SIZE -> span.fontSize?.let {
+                    TextSpanType.FontSize -> span.fontSize?.let {
                         SpanStyle(
                             fontSize = TextUnit(
                                 it.toFloat(),
@@ -100,10 +105,10 @@ class SpanWiz(private val moshi: Moshi) {
                         )
                     }
 
-                    TextSpanType.LINK -> {
+                    TextSpanType.Clickable -> {
                         span.link?.let {
                             addStringAnnotation(
-                                tag = span.spanTag ?: "URL",
+                                tag = span.spanTag ?: URL_TAG,
                                 annotation = span.link,
                                 start = span.start,
                                 end = span.end
@@ -115,8 +120,8 @@ class SpanWiz(private val moshi: Moshi) {
                         )
                     }
 
-                    TextSpanType.CUSTOM -> SpanStyle()
-                    TextSpanType.SUPERSCRIPT -> span.color?.let {
+                    TextSpanType.Custom -> SpanStyle()
+                    TextSpanType.Superscript -> span.color?.let {
                         SpanStyle(
                             baselineShift = BaselineShift.Superscript,
                             fontSize = 16.sp,
@@ -124,7 +129,7 @@ class SpanWiz(private val moshi: Moshi) {
                         )
                     }
 
-                    TextSpanType.SUBSCRIPT ->
+                    TextSpanType.Subscript ->
                         span.color?.let {
                             SpanStyle(
                                 baselineShift = BaselineShift.Subscript,
@@ -133,7 +138,7 @@ class SpanWiz(private val moshi: Moshi) {
                             )
                         }
 
-                    TextSpanType.LETTER_SPACING -> span.letterSpacing?.let {
+                    TextSpanType.LetterSpacing -> span.letterSpacing?.let {
                         SpanStyle(
                             letterSpacing = TextUnit(
                                 it,
@@ -142,7 +147,7 @@ class SpanWiz(private val moshi: Moshi) {
                         )
                     }
 
-                    TextSpanType.SHADOW -> span.shadow?.let {
+                    TextSpanType.Shadow -> span.shadow?.let {
                         println("Shadow: $it ${span.radius}")
                         SpanStyle(
                             shadow = Shadow(
@@ -167,61 +172,4 @@ class SpanWiz(private val moshi: Moshi) {
         }))
     }
 
-}
-
-@Composable
-fun AnnotatedTextView(
-    modifier: Modifier = Modifier,
-    spanWiz: SpanWiz,
-    jsonString: String? = null,
-    textWithSpans: TextWithSpans? = null,
-    text: AnnotatedString? = null,
-    style: TextStyle = TextStyle.Default,
-    softWrap: Boolean = true,
-    overflow: TextOverflow = TextOverflow.Clip,
-    maxLines: Int = Int.MAX_VALUE,
-    onTextLayout: (TextLayoutResult) -> Unit = {},
-    annotatedTags: List<String> = listOf(),
-    onClick: (Int, String?, Range<String>?) -> Unit = { _, _, _ -> }
-) {
-    val annotatedString =
-        Builder()
-            .apply {
-                text?.let { append(it) }
-                textWithSpans?.let {
-                    append(
-                        spanWiz.applySpansToAnnotatedString(it)
-                    )
-                }
-                jsonString?.let { append(spanWiz.applyToAnnotatedString(jsonString) ?: Builder().toAnnotatedString()) }
-            }.toAnnotatedString()
-
-    val uriHandler: UriHandler = LocalUriHandler.current
-
-    ClickableText(
-        text = annotatedString,
-        modifier = modifier,
-        style = style,
-        softWrap = softWrap,
-        overflow = overflow,
-        maxLines = maxLines,
-        onTextLayout = onTextLayout,
-        onClick = { offset ->
-            if (annotatedTags.isNotEmpty()) {
-                annotatedTags.forEach { tag ->
-                    annotatedString?.getStringAnnotations(tag = tag, start = offset, end = offset)
-                        ?.firstOrNull()?.let { annotation ->
-                            onClick.invoke(offset, tag, annotation)
-                        }
-
-                }
-            }
-            annotatedString.getStringAnnotations(tag = "URL", start = offset, end = offset)
-                .firstOrNull()?.let { annotation ->
-                    uriHandler.openUri(annotation.item)
-                    onClick.invoke(offset, "URL", annotation)
-                }
-            onClick.invoke(offset, null, null)
-        }
-    )
 }
