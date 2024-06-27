@@ -1,5 +1,5 @@
 package com.pavanpm.spanwiz.library
 
 enum class TextSpanType {
-    BOLD, ITALIC, UNDERLINE, STRIKETHROUGH, SUPERSCRIPT, SUBSCRIPT, COLOR, BACKGROUND_COLOR, FONT_SIZE, LINK, CUSTOM, LETTER_SPACING, SHADOW;
+    Bold, Italic, Underline, Strikethrough, Superscript, Subscript, Color, BackgroundColor, FontSize, Clickable, Custom, LetterSpacing, Shadow;
 }

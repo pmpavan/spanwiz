@@ -12,6 +12,7 @@ appcompat = "1.7.0"
 material = "1.12.0"
 moshi = "1.15.1"
 runtimeAndroid = "1.6.8"
+spanwiz = "0.0.1"
 uiTextAndroid = "1.6.8"
 ksp ="2.0.0-1.0.22"
 uiAndroid = "1.6.8"
@@ -41,6 +42,7 @@ androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime
 androidx-ui-text-android = { group = "androidx.compose.ui", name = "ui-text-android", version.ref = "uiTextAndroid" }
 androidx-ui-android = { group = "androidx.compose.ui", name = "ui-android", version.ref = "uiAndroid" }
 androidx-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android", version.ref = "foundationAndroid" }
+spanwiz = { module = "com.pmpavan.spanwiz:spanwiz", version.ref = "spanwiz" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -49,4 +51,5 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 jvm = { id = "jvm" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+maven-publish = { id = "maven-publish" }
 

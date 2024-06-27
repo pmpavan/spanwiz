@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "SpanWiz"
 include(":app")
 include(":library")
+project(":library").name = "spanwiz"
