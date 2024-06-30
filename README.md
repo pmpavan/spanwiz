@@ -173,14 +173,16 @@ dependencies {
 TBD
 
 ## Roadmap
-- Add support for custom text styles.
-- Extend support for SpannableString
+- [ ] Add support for custom text styles
+- [ ] Extend support for SpannableString
+- [ ] Add support for kotlin serilization
+- [ ] Add support for Gson
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 ## Authors
-- Pavan P M
+- Pavan P M - Initial work - [@pmpavan](https://github.com/pmpavan)
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
