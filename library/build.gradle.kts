@@ -49,16 +49,9 @@ android {
 }
 
 dependencies {
-
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.moshi)
-    implementation(libs.androidx.ui.android)
     implementation(libs.androidx.foundation.android)
+    api(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)
-    implementation(libs.androidx.runtime.android)
-    implementation(libs.androidx.ui.text.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
