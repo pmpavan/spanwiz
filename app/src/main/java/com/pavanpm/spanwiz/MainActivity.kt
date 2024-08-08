@@ -161,17 +161,19 @@ private fun List(
                     if (annotatedTag?.tag != null && annotatedTag.tag != URL_TAG) {
                         uriHandler.openUri(annotatedTag.item)
                     }
-//                    clickableString
-//                        .getStringAnnotations(tag, offset, offset)
-//                        .firstOrNull()?.let { stringAnnotation ->
-//                            println(stringAnnotation.item)
-//                            Toast.makeText(
-//                                context,
-//                                stringAnnotation.item,
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//                            uriHandler.openUri(stringAnnotation.item)
-//                        }
+                    if (tag != null) {
+                        clickableString
+                            .getStringAnnotations(tag, offset, offset)
+                            .firstOrNull()?.let { stringAnnotation ->
+                                println(stringAnnotation.item)
+                                Toast.makeText(
+                                    context,
+                                    stringAnnotation.item,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                uriHandler.openUri(stringAnnotation.item)
+                            }
+                    }
                 }
             )
             HorizontalDivider()

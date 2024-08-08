@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.compose.compiler)
     id(libs.plugins.maven.publish.get().pluginId)
+    id(libs.plugins.dokka.gradle.plugin.get().pluginId)
 }
 
 android {
@@ -55,18 +56,42 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    dokkaPlugin(libs.android.documentation.plugin)
+
 }
 
+val dokkaJavadocJar by tasks.register<Jar>("dokkaJavadocJar") {
+    dependsOn(tasks.dokkaJavadoc)
+    from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
+    archiveClassifier.set("javadoc")
+}
+
+val dokkaHtmlJar by tasks.register<Jar>("dokkaHtmlJar") {
+    dependsOn(tasks.dokkaHtml)
+    from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+    archiveClassifier.set("html-doc")
+}
 publishing {
     publications {
         register<MavenPublication>("release") {
             groupId = "com.pmpavan.spanwiz"
             artifactId = "spanwiz"
             version = "0.0.1"
-
+            artifact(dokkaJavadocJar)
+            artifact(dokkaHtmlJar)
             afterEvaluate {
                 from(components["release"])
             }
+        }
+    }
+}
+
+tasks.dokkaHtml.configure {
+    outputDirectory.set(layout.projectDirectory.dir("../documentation/spanwiz"))
+    dokkaSourceSets {
+        named("main") {
+            noAndroidSdkLink.set(false) // Set to true if you want to avoid linking to Android SDK
         }
     }
 }
