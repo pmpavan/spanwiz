@@ -1,0 +1,53 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:com.pavanpm.spanwiz.library.models////PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/index.html
+$dokka.location:com.pavanpm.spanwiz.library.models/SpanStyle///PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/-span-style/index.html
+$dokka.location:com.pavanpm.spanwiz.library.models/SpanStyle/SpanStyle/#kotlin.Int#kotlin.Int#com.pavanpm.spanwiz.library.TextSpanType#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.Int?#kotlin.String?#kotlin.String?#kotlin.Int?#kotlin.Float?#kotlin.Int?#kotlin.String?#kotlin.Float?#kotlin.String?/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/-span-style/-span-style.html
+$dokka.location:com.pavanpm.spanwiz.library.models/SpanStyle/backgroundColor/#/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/-span-style/background-color.html
+$dokka.location:com.pavanpm.spanwiz.library.models/SpanStyle/color/#/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/-span-style/color.html
+$dokka.location:com.pavanpm.spanwiz.library.models/SpanStyle/custom/#/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/-span-style/custom.html
+$dokka.location:com.pavanpm.spanwiz.library.models/SpanStyle/end/#/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/-span-style/end.html
+$dokka.location:com.pavanpm.spanwiz.library.models/SpanStyle/fontFamily/#/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/-span-style/font-family.html
+$dokka.location:com.pavanpm.spanwiz.library.models/SpanStyle/fontSize/#/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/-span-style/font-size.html
+$dokka.location:com.pavanpm.spanwiz.library.models/SpanStyle/fontStyle/#/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/-span-style/font-style.html
+$dokka.location:com.pavanpm.spanwiz.library.models/SpanStyle/fontWeight/#/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/-span-style/font-weight.html
+$dokka.location:com.pavanpm.spanwiz.library.models/SpanStyle/letterSpacing/#/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/-span-style/letter-spacing.html
+$dokka.location:com.pavanpm.spanwiz.library.models/SpanStyle/link/#/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/-span-style/link.html
+$dokka.location:com.pavanpm.spanwiz.library.models/SpanStyle/radius/#/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/-span-style/radius.html
+$dokka.location:com.pavanpm.spanwiz.library.models/SpanStyle/shadow/#/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/-span-style/shadow.html
+$dokka.location:com.pavanpm.spanwiz.library.models/SpanStyle/spanTag/#/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/-span-style/span-tag.html
+$dokka.location:com.pavanpm.spanwiz.library.models/SpanStyle/start/#/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/-span-style/start.html
+$dokka.location:com.pavanpm.spanwiz.library.models/SpanStyle/style/#/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/-span-style/style.html
+$dokka.location:com.pavanpm.spanwiz.library.models/TextWithSpans///PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/-text-with-spans/index.html
+$dokka.location:com.pavanpm.spanwiz.library.models/TextWithSpans/TextWithSpans/#kotlin.String#kotlin.collections.List[com.pavanpm.spanwiz.library.models.SpanStyle]/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/-text-with-spans/-text-with-spans.html
+$dokka.location:com.pavanpm.spanwiz.library.models/TextWithSpans/spans/#/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/-text-with-spans/spans.html
+$dokka.location:com.pavanpm.spanwiz.library.models/TextWithSpans/text/#/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library.models/-text-with-spans/text.html
+$dokka.location:com.pavanpm.spanwiz.library////PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library/index.html
+$dokka.location:com.pavanpm.spanwiz.library//AnnotatedTextView/#androidx.compose.ui.Modifier#com.pavanpm.spanwiz.library.SpanWiz#kotlin.String?#com.pavanpm.spanwiz.library.models.TextWithSpans?#androidx.compose.ui.text.AnnotatedString?#androidx.compose.ui.text.TextStyle#kotlin.Boolean#androidx.compose.ui.text.style.TextOverflow#kotlin.Int#kotlin.Function1[androidx.compose.ui.text.TextLayoutResult,kotlin.Unit]#kotlin.collections.List[kotlin.String]#kotlin.Function3[kotlin.Int,kotlin.String?,androidx.compose.ui.text.AnnotatedString.Range[kotlin.String]?,kotlin.Unit]/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library/-annotated-text-view.html
+$dokka.location:com.pavanpm.spanwiz.library/SpanWiz.Companion///PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library/-span-wiz/-companion/index.html
+$dokka.location:com.pavanpm.spanwiz.library/SpanWiz.Companion/URL_TAG/#/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library/-span-wiz/-companion/-u-r-l_-t-a-g.html
+$dokka.location:com.pavanpm.spanwiz.library/SpanWiz///PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library/-span-wiz/index.html
+$dokka.location:com.pavanpm.spanwiz.library/SpanWiz/SpanWiz/#com.squareup.moshi.Moshi/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library/-span-wiz/-span-wiz.html
+$dokka.location:com.pavanpm.spanwiz.library/SpanWiz/createFromJson/#kotlin.String/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library/-span-wiz/create-from-json.html
+$dokka.location:com.pavanpm.spanwiz.library/SpanWiz/createFromTextWithSpans/#com.pavanpm.spanwiz.library.models.TextWithSpans/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library/-span-wiz/create-from-text-with-spans.html
+$dokka.location:com.pavanpm.spanwiz.library/SpanWiz/parseJson/#kotlin.String/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library/-span-wiz/parse-json.html
+$dokka.location:com.pavanpm.spanwiz.library/TextSpanType.BackgroundColor///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}spanwiz/com.pavanpm.spanwiz.library/-text-span-type/-background-color/index.html
+$dokka.location:com.pavanpm.spanwiz.library/TextSpanType.Bold///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}spanwiz/com.pavanpm.spanwiz.library/-text-span-type/-bold/index.html
+$dokka.location:com.pavanpm.spanwiz.library/TextSpanType.Clickable///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}spanwiz/com.pavanpm.spanwiz.library/-text-span-type/-clickable/index.html
+$dokka.location:com.pavanpm.spanwiz.library/TextSpanType.Color///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}spanwiz/com.pavanpm.spanwiz.library/-text-span-type/-color/index.html
+$dokka.location:com.pavanpm.spanwiz.library/TextSpanType.Custom///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}spanwiz/com.pavanpm.spanwiz.library/-text-span-type/-custom/index.html
+$dokka.location:com.pavanpm.spanwiz.library/TextSpanType.FontSize///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}spanwiz/com.pavanpm.spanwiz.library/-text-span-type/-font-size/index.html
+$dokka.location:com.pavanpm.spanwiz.library/TextSpanType.Italic///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}spanwiz/com.pavanpm.spanwiz.library/-text-span-type/-italic/index.html
+$dokka.location:com.pavanpm.spanwiz.library/TextSpanType.LetterSpacing///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}spanwiz/com.pavanpm.spanwiz.library/-text-span-type/-letter-spacing/index.html
+$dokka.location:com.pavanpm.spanwiz.library/TextSpanType.Shadow///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}spanwiz/com.pavanpm.spanwiz.library/-text-span-type/-shadow/index.html
+$dokka.location:com.pavanpm.spanwiz.library/TextSpanType.Strikethrough///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}spanwiz/com.pavanpm.spanwiz.library/-text-span-type/-strikethrough/index.html
+$dokka.location:com.pavanpm.spanwiz.library/TextSpanType.Subscript///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}spanwiz/com.pavanpm.spanwiz.library/-text-span-type/-subscript/index.html
+$dokka.location:com.pavanpm.spanwiz.library/TextSpanType.Superscript///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}spanwiz/com.pavanpm.spanwiz.library/-text-span-type/-superscript/index.html
+$dokka.location:com.pavanpm.spanwiz.library/TextSpanType.Underline///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}spanwiz/com.pavanpm.spanwiz.library/-text-span-type/-underline/index.html
+$dokka.location:com.pavanpm.spanwiz.library/TextSpanType///PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library/-text-span-type/index.html
+$dokka.location:com.pavanpm.spanwiz.library/TextSpanType/entries/#/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library/-text-span-type/entries.html
+$dokka.location:com.pavanpm.spanwiz.library/TextSpanType/valueOf/#kotlin.String/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library/-text-span-type/value-of.html
+$dokka.location:com.pavanpm.spanwiz.library/TextSpanType/values/#/PointingToDeclaration/spanwiz/com.pavanpm.spanwiz.library/-text-span-type/values.html
+com.pavanpm.spanwiz.library
+com.pavanpm.spanwiz.library.models
+
