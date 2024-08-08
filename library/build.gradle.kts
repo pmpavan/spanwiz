@@ -88,7 +88,7 @@ publishing {
 }
 
 tasks.dokkaHtml.configure {
-    outputDirectory.set(layout.projectDirectory.dir("../documentation/spanwiz"))
+    outputDirectory.set(layout.projectDirectory.dir("../docs"))
     dokkaSourceSets {
         named("main") {
             noAndroidSdkLink.set(false) // Set to true if you want to avoid linking to Android SDK
