@@ -5,6 +5,8 @@
 ![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
 [![Release](https://jitpack.io/v/pmpavan/spanwiz.svg)](https://jitpack.io/#pmpavan/spanwiz)
 
+[APIs](https://pmpavan.github.io/spanwiz/)
+
 SpanWiz is an Android Kotlin SDK for creating text spans based on JSON data sent from a backend using Moshi. It supports styles like bold, italic, and clickable links.
 
 ## Features
