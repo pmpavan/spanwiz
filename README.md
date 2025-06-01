@@ -21,12 +21,24 @@ SpanWiz is an Android Kotlin SDK for creating text spans based on JSON data sent
 - Clickable: `{"style": "Clickable", "link": "https://example.com"}`
 - Underline: `{"style": "Underline"}`
 - Strikethrough: `{"style": "Strikethrough"}`
-- Superscript: `{"style": "Superscript", "color": "#FF5733"}`
-- Subscript: `{"style": "Subscript", "color": "#33FF57"}`
+- Superscript: `{"style": "Superscript", "color": "#FF5733", "fontSize": 12}` (fontSize is optional, defaults to 16sp)
+- Subscript: `{"style": "Subscript", "color": "#33FF57", "fontSize": 12}` (fontSize is optional, defaults to 16sp)
 - Background Color: `{"style": "BackgroundColor", "backgroundColor": "#FFDD00"}`
 - Font Size: `{"style": "FontSize", "fontSize": 20}`
 - Letter Spacing: `{"style": "LetterSpacing", "letterSpacing": 0.1}`
-- Shadow: `{"style": "Shadow", "shadow": "#000000", "radius": 1.5}`
+- Shadow: `{"style": "Shadow", "shadow": "#000000", "radius": 1.5, "shadowOffsetX": 3.0, "shadowOffsetY": 6.0}` (shadowOffsetX and shadowOffsetY are optional, default to 5.0f, 10.0f respectively)
+
+### General Span Properties
+
+The following properties can be added to *any* span object within the `spans` array to further customize its appearance:
+
+- `"fontFamily": "<string>"`: Optional. Specifies the font family for the text within this span.
+  Supported generic values include: `"sans-serif"`, `"serif"`, `"monospace"`, `"cursive"`.
+  Example: `{"start": 0, "end": 5, "style": "Bold", "fontFamily": "serif"}`
+- `"fontWeight": <number>`: Optional. Specifies the font weight for the text within this span.
+  Supported integer values are 100 (Thin), 200 (ExtraLight), 300 (Light), 400 (Normal), 500 (Medium), 600 (SemiBold), 700 (Bold), 800 (ExtraBold), and 900 (Black).
+  If provided for a span that also has `style: "Bold"`, this `fontWeight` will take precedence.
+  Example: `{"start": 0, "end": 5, "style": "Custom", "fontWeight": 300}`
 
 ## Installation
 ### JitPack
@@ -59,12 +71,15 @@ dependencies {
     {
       "start": 30,
       "end": 44,
-      "style": "Bold"
+      "style": "Bold",
+      "fontWeight": 800,
+      "fontFamily": "sans-serif"
     },
     {
       "start": 49,
       "end": 60,
-      "style": "Italic"
+      "style": "Italic",
+      "fontFamily": "cursive"
     },
     {
       "start": 78,
@@ -86,7 +101,8 @@ dependencies {
       "start": 171,
       "end": 172,
       "style": "Superscript",
-      "color": "#FF5733"
+      "color": "#FF5733",
+      "fontSize": 10
     },
     {
       "start": 200,
@@ -117,7 +133,9 @@ dependencies {
       "end": 511,
       "style": "Shadow",
       "shadow": "#000000",
-      "radius": 1.5
+      "radius": 1.5,
+      "shadowOffsetX": 3.0,
+      "shadowOffsetY": 6.0
     }
   ]
 }
