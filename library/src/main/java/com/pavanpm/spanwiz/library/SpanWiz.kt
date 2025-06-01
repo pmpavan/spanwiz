@@ -15,17 +15,12 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.sp
 import com.pavanpm.spanwiz.library.models.TextWithSpans
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
+// Moshi specific imports removed
 import android.util.Log // Added for logging
 
-// Define ParseResult sealed class
-sealed class ParseResult {
-    data class Success(val data: com.pavanpm.spanwiz.library.models.TextWithSpans) : ParseResult()
-    data class Error(val exception: Exception, val message: String? = null) : ParseResult()
-}
+// ParseResult is now defined in ParseResult.kt
 
-class SpanWiz(private val moshi: Moshi) {
+class SpanWiz(private val jsonParser: JsonParser) { // Changed constructor parameter
 
     private val colorCache = mutableMapOf<String, androidx.compose.ui.graphics.Color>()
 
@@ -37,26 +32,16 @@ class SpanWiz(private val moshi: Moshi) {
     }
 
     fun createFromJson(jsonString: String): AnnotatedString? {
-        return when (val result = parseJson(jsonString)) {
+        return when (val result = jsonParser.parse(jsonString)) { // Calls injected jsonParser.parse
             is ParseResult.Success -> createFromTextWithSpans(result.data)
             is ParseResult.Error -> {
-                Log.w("SpanWiz", "Failed to create AnnotatedString from JSON: ${result.message}", result.exception)
+                Log.w("SpanWiz", "Failed to create AnnotatedString from JSON. Parser error: ${result.message}", result.exception)
                 null
             }
         }
     }
 
-    fun parseJson(jsonString: String): ParseResult {
-        val adapter: JsonAdapter<TextWithSpans> = moshi.adapter(TextWithSpans::class.java)
-        return try {
-            adapter.fromJson(jsonString)?.let {
-                ParseResult.Success(it)
-            } ?: ParseResult.Error(NullPointerException("Parsed JSON resulted in null object"), "Parsed JSON resulted in null object")
-        } catch (e: Exception) {
-            Log.e("SpanWiz", "JSON parsing error", e)
-            ParseResult.Error(e, "Failed to parse JSON string")
-        }
-    }
+    // parseJson method removed
 
     fun createFromTextWithSpans(textWithSpans: TextWithSpans): AnnotatedString {
         return buildAnnotatedString {

@@ -24,56 +24,34 @@ class SpanWizTest {
     @Before
     fun setUp() {
         moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-        spanWiz = SpanWiz(moshi)
+        val moshiJsonParser = MoshiJsonParser(moshi) // Create the parser instance
+        spanWiz = SpanWiz(moshiJsonParser)          // Pass parser to SpanWiz
     }
 
-    // --- parseJson Tests ---
+    // --- Removed SpanWiz.parseJson tests as the method is no longer public on SpanWiz ---
 
+    // --- createFromJson Tests (New) ---
     @Test
-    fun `parseJson with valid JSON returns Success`() {
+    fun `createFromJson with valid JSON returns non-null AnnotatedString`() {
         val jsonString = """
         {
-            "text": "Hello World",
-            "spans": [
-                { "start": 0, "end": 5, "style": "Bold" }
-            ]
+            "text": "Hello",
+            "spans": []
         }
         """
-        val result = spanWiz.parseJson(jsonString)
-        assertTrue(result is ParseResult.Success)
-        val data = (result as ParseResult.Success).data
-        assertEquals("Hello World", data.text)
-        assertEquals(1, data.spans.size)
-        assertEquals(0, data.spans[0].start)
-        assertEquals(5, data.spans[0].end)
-        assertEquals(TextSpanType.Bold, data.spans[0].style)
+        val annotatedString = spanWiz.createFromJson(jsonString)
+        assertNotNull("AnnotatedString should not be null for valid JSON", annotatedString)
+        assertEquals("Hello", annotatedString?.text)
     }
 
     @Test
-    fun `parseJson with invalid JSON returns Error`() {
-        val jsonString = """
-        {
-            "text": "Hello World",
-            "spans": [
-                { "start": 0, "end": 5, "style": "Bold" // Missing closing brace
-            ]
-        }
-        """
-        val result = spanWiz.parseJson(jsonString)
-        assertTrue(result is ParseResult.Error)
+    fun `createFromJson with invalid JSON returns null`() {
+        val jsonString = "{ \"text\": \"Hello\", \"spans\": [ " // Invalid JSON
+        val annotatedString = spanWiz.createFromJson(jsonString)
+        assertNull("AnnotatedString should be null for invalid JSON", annotatedString)
     }
 
-    @Test
-    fun `parseJson with 'null' string returns Error`() {
-        val jsonString = "null"
-        val result = spanWiz.parseJson(jsonString)
-        // Depending on Moshi setup, this might be a success with a null object or an error.
-        // For TextWithSpans (non-null type), Moshi should ideally throw an error.
-        // Let's assume it's an error if the object can't be formed.
-        assertTrue(result is ParseResult.Error)
-    }
-
-    // --- createFromTextWithSpans Tests ---
+    // --- createFromTextWithSpans Tests (Existing tests remain largely unchanged) ---
 
     @Test
     fun `createFromTextWithSpans applies Bold style`() {
