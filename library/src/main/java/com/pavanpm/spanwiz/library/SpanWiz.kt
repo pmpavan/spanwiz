@@ -16,26 +16,45 @@ import androidx.compose.ui.unit.sp
 import com.pavanpm.spanwiz.library.models.TextWithSpans
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import android.util.Log // Added for logging
 
+// Define ParseResult sealed class
+sealed class ParseResult {
+    data class Success(val data: com.pavanpm.spanwiz.library.models.TextWithSpans) : ParseResult()
+    data class Error(val exception: Exception, val message: String? = null) : ParseResult()
+}
 
 class SpanWiz(private val moshi: Moshi) {
 
+    private val colorCache = mutableMapOf<String, androidx.compose.ui.graphics.Color>()
+
     companion object {
-        const val URL_TAG = "URL"
+        const val URL_TAG = "URL" // Existing constant
+        private val BOLD_STYLE = SpanStyle(fontWeight = FontWeight.Bold)
+        private val ITALIC_STYLE = SpanStyle(fontStyle = FontStyle.Italic)
+        private val SUPERSCRIPT_SUBSCRIPT_FONT_SIZE = 16.sp
+        private val DEFAULT_SHADOW_OFFSET = Offset(5.0f, 10.0f)
     }
 
     fun createFromJson(jsonString: String): AnnotatedString? {
-        val json = parseJson(jsonString) ?: return null
-        return createFromTextWithSpans(json)
+        return when (val result = parseJson(jsonString)) {
+            is ParseResult.Success -> createFromTextWithSpans(result.data)
+            is ParseResult.Error -> {
+                Log.w("SpanWiz", "Failed to create AnnotatedString from JSON: ${result.message}", result.exception)
+                null
+            }
+        }
     }
 
-    fun parseJson(jsonString: String): TextWithSpans? {
+    fun parseJson(jsonString: String): ParseResult {
         val adapter: JsonAdapter<TextWithSpans> = moshi.adapter(TextWithSpans::class.java)
         return try {
-            adapter.fromJson(jsonString)
+            adapter.fromJson(jsonString)?.let {
+                ParseResult.Success(it)
+            } ?: ParseResult.Error(NullPointerException("Parsed JSON resulted in null object"), "Parsed JSON resulted in null object")
         } catch (e: Exception) {
-            e.printStackTrace()
-            null
+            Log.e("SpanWiz", "JSON parsing error", e)
+            ParseResult.Error(e, "Failed to parse JSON string")
         }
     }
 
@@ -44,8 +63,8 @@ class SpanWiz(private val moshi: Moshi) {
             append(textWithSpans.text)
             textWithSpans.spans.forEach { span ->
                 val spanStyle = when (span.style) {
-                    TextSpanType.Bold -> SpanStyle(fontWeight = FontWeight.Bold)
-                    TextSpanType.Italic -> SpanStyle(fontStyle = FontStyle.Italic)
+                    TextSpanType.Bold -> BOLD_STYLE
+                    TextSpanType.Italic -> ITALIC_STYLE
                     TextSpanType.Underline -> SpanStyle(textDecoration = TextDecoration.Underline)
                     TextSpanType.Strikethrough -> SpanStyle(textDecoration = TextDecoration.LineThrough)
                     TextSpanType.Color -> span.color?.let { SpanStyle(color = getColor(it)) }
@@ -82,7 +101,7 @@ class SpanWiz(private val moshi: Moshi) {
                     TextSpanType.Superscript -> span.color?.let {
                         SpanStyle(
                             baselineShift = BaselineShift.Superscript,
-                            fontSize = 16.sp,
+                            fontSize = SUPERSCRIPT_SUBSCRIPT_FONT_SIZE, // Use constant
                             color = getColor(it)
                         )
                     }
@@ -91,7 +110,7 @@ class SpanWiz(private val moshi: Moshi) {
                         span.color?.let {
                             SpanStyle(
                                 baselineShift = BaselineShift.Subscript,
-                                fontSize = 16.sp,
+                                fontSize = SUPERSCRIPT_SUBSCRIPT_FONT_SIZE, // Use constant
                                 color = getColor(it)
                             )
                         }
@@ -109,7 +128,7 @@ class SpanWiz(private val moshi: Moshi) {
                         SpanStyle(
                             shadow = Shadow(
                                 color = getColor(it),
-                                offset = Offset(5.0f, 10.0f),
+                                offset = DEFAULT_SHADOW_OFFSET, // Use constant
                                 blurRadius = span.radius ?: 0.0f
                             )
                         )
@@ -122,11 +141,13 @@ class SpanWiz(private val moshi: Moshi) {
         }
     }
 
-    private fun getColor(colorString: String): Color {
-        return Color(android.graphics.Color.parseColor(buildString {
-            append(if (!colorString.startsWith("#")) "#" else "")
-            append(colorString)
-        }))
+    private fun getColor(colorString: String): androidx.compose.ui.graphics.Color {
+        return colorCache.getOrPut(colorString) {
+            androidx.compose.ui.graphics.Color(android.graphics.Color.parseColor(buildString {
+                append(if (!colorString.startsWith("#")) "#" else "")
+                append(colorString)
+            }))
+        }
     }
 
 }
