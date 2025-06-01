@@ -18,8 +18,10 @@ data class SpanStyle(
     val fontWeight: Int? = null,
     val letterSpacing: Float? = null,
     val fontStyle: Int? = null,
-    val shadow: String? = null,
+    val shadow: String? = null, // This is for shadow color
     val radius: Float? = null,
+    val shadowOffsetX: Float? = null, // New property
+    val shadowOffsetY: Float? = null, // New property
     val spanTag: String? = null
 )
 

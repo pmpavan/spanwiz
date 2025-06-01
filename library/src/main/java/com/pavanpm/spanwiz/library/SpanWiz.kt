@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontFamily // New import
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.BaselineShift
@@ -30,8 +31,7 @@ class SpanWiz(private val moshi: Moshi) {
 
     companion object {
         const val URL_TAG = "URL" // Existing constant
-        private val BOLD_STYLE = SpanStyle(fontWeight = FontWeight.Bold)
-        private val ITALIC_STYLE = SpanStyle(fontStyle = FontStyle.Italic)
+        // BOLD_STYLE and ITALIC_STYLE are removed as their logic is now inline
         private val SUPERSCRIPT_SUBSCRIPT_FONT_SIZE = 16.sp
         private val DEFAULT_SHADOW_OFFSET = Offset(5.0f, 10.0f)
     }
@@ -62,26 +62,25 @@ class SpanWiz(private val moshi: Moshi) {
         return buildAnnotatedString {
             append(textWithSpans.text)
             textWithSpans.spans.forEach { span ->
-                val spanStyle = when (span.style) {
-                    TextSpanType.Bold -> BOLD_STYLE
-                    TextSpanType.Italic -> ITALIC_STYLE
-                    TextSpanType.Underline -> SpanStyle(textDecoration = TextDecoration.Underline)
-                    TextSpanType.Strikethrough -> SpanStyle(textDecoration = TextDecoration.LineThrough)
-                    TextSpanType.Color -> span.color?.let { SpanStyle(color = getColor(it)) }
+                var styleColor: Color? = null
+                var styleFontSize: TextUnit? = null
+                var styleFontWeight: FontWeight? = null
+                var styleFontStyle: FontStyle? = null
+                var styleFontFamily: FontFamily? = null
+                var styleTextDecoration: TextDecoration? = null
+                var styleBaselineShift: BaselineShift? = null
+                var styleLetterSpacing: TextUnit? = null
+                var styleBackground: Color? = null
+                var styleShadow: Shadow? = null
 
-                    TextSpanType.BackgroundColor -> span.backgroundColor?.let {
-                        SpanStyle(background = getColor(it))
-                    }
-
-                    TextSpanType.FontSize -> span.fontSize?.let {
-                        SpanStyle(
-                            fontSize = TextUnit(
-                                it.toFloat(),
-                                TextUnitType.Sp
-                            )
-                        )
-                    }
-
+                when (span.style) {
+                    TextSpanType.Bold -> styleFontWeight = FontWeight.Bold
+                    TextSpanType.Italic -> styleFontStyle = FontStyle.Italic
+                    TextSpanType.Underline -> styleTextDecoration = TextDecoration.Underline
+                    TextSpanType.Strikethrough -> styleTextDecoration = TextDecoration.LineThrough
+                    TextSpanType.Color -> span.color?.let { styleColor = getColor(it) }
+                    TextSpanType.BackgroundColor -> span.backgroundColor?.let { styleBackground = getColor(it) }
+                    TextSpanType.FontSize -> span.fontSize?.let { styleFontSize = TextUnit(it.toFloat(), TextUnitType.Sp) }
                     TextSpanType.Clickable -> {
                         span.link?.let {
                             addStringAnnotation(
@@ -91,51 +90,71 @@ class SpanWiz(private val moshi: Moshi) {
                                 end = span.end
                             )
                         }
-                        SpanStyle(
-                            color = Color(-0x9b4a0a),
-                            textDecoration = TextDecoration.Underline
-                        )
+                        styleColor = Color(-0x9b4a0a)
+                        styleTextDecoration = TextDecoration.Underline
                     }
-
-                    TextSpanType.Custom -> SpanStyle()
-                    TextSpanType.Superscript -> span.color?.let {
-                        SpanStyle(
-                            baselineShift = BaselineShift.Superscript,
-                            fontSize = SUPERSCRIPT_SUBSCRIPT_FONT_SIZE, // Use constant
-                            color = getColor(it)
-                        )
+                    TextSpanType.Superscript -> {
+                        styleBaselineShift = BaselineShift.Superscript
+                        styleFontSize = span.fontSize?.let { it.toFloat().sp } ?: SUPERSCRIPT_SUBSCRIPT_FONT_SIZE
+                        span.color?.let { styleColor = getColor(it) }
                     }
-
-                    TextSpanType.Subscript ->
-                        span.color?.let {
-                            SpanStyle(
-                                baselineShift = BaselineShift.Subscript,
-                                fontSize = SUPERSCRIPT_SUBSCRIPT_FONT_SIZE, // Use constant
-                                color = getColor(it)
-                            )
+                    TextSpanType.Subscript -> {
+                        styleBaselineShift = BaselineShift.Subscript
+                        styleFontSize = span.fontSize?.let { it.toFloat().sp } ?: SUPERSCRIPT_SUBSCRIPT_FONT_SIZE
+                        span.color?.let { styleColor = getColor(it) }
+                    }
+                    TextSpanType.LetterSpacing -> span.letterSpacing?.let { styleLetterSpacing = TextUnit(it, TextUnitType.Sp) }
+                    TextSpanType.Shadow -> span.shadow?.let { shadowColorString ->
+                        val customOffset = if (span.shadowOffsetX != null && span.shadowOffsetY != null) {
+                            Offset(span.shadowOffsetX, span.shadowOffsetY)
+                        } else {
+                            DEFAULT_SHADOW_OFFSET
                         }
-
-                    TextSpanType.LetterSpacing -> span.letterSpacing?.let {
-                        SpanStyle(
-                            letterSpacing = TextUnit(
-                                it,
-                                TextUnitType.Sp
-                            )
+                        styleShadow = Shadow(
+                            color = getColor(shadowColorString),
+                            offset = customOffset,
+                            blurRadius = span.radius ?: 0.0f
                         )
                     }
+                    TextSpanType.Custom -> { /* No specific style from type itself */ }
+                }
 
-                    TextSpanType.Shadow -> span.shadow?.let {
-                        SpanStyle(
-                            shadow = Shadow(
-                                color = getColor(it),
-                                offset = DEFAULT_SHADOW_OFFSET, // Use constant
-                                blurRadius = span.radius ?: 0.0f
-                            )
-                        )
+                // Apply fontFamily from span model
+                span.fontFamily?.let { familyName ->
+                    styleFontFamily = when (familyName.lowercase()) {
+                        "sans-serif" -> FontFamily.SansSerif
+                        "serif" -> FontFamily.Serif
+                        "monospace" -> FontFamily.Monospace
+                        "cursive" -> FontFamily.Cursive
+                        else -> null // Or some other default/logging
                     }
                 }
-                spanStyle?.let {
-                    addStyle(it, span.start, span.end)
+
+                // Apply fontWeight from span model (this will override fontWeight from TextSpanType.Bold if both are present)
+                span.fontWeight?.let { weight ->
+                    styleFontWeight = when (weight) {
+                        100 -> FontWeight.W100; 200 -> FontWeight.W200; 300 -> FontWeight.W300;
+                        400 -> FontWeight.W400; 500 -> FontWeight.W500; 600 -> FontWeight.W600;
+                        700 -> FontWeight.W700; 800 -> FontWeight.W800; 900 -> FontWeight.W900;
+                        else -> styleFontWeight // Keep existing from TextSpanType.Bold or null
+                    }
+                }
+
+                val finalSpanStyle = SpanStyle(
+                    color = styleColor ?: Color.Unspecified,
+                    fontSize = styleFontSize ?: TextUnit.Unspecified,
+                    fontWeight = styleFontWeight,
+                    fontStyle = styleFontStyle,
+                    fontFamily = styleFontFamily,
+                    textDecoration = styleTextDecoration,
+                    baselineShift = styleBaselineShift,
+                    letterSpacing = styleLetterSpacing ?: TextUnit.Unspecified,
+                    background = styleBackground ?: Color.Unspecified,
+                    shadow = styleShadow
+                )
+
+                if (finalSpanStyle != SpanStyle()) { // Only add if not default/empty
+                    addStyle(finalSpanStyle, span.start, span.end)
                 }
             }
         }

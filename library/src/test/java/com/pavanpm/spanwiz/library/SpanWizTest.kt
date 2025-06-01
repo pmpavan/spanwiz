@@ -3,6 +3,7 @@ package com.pavanpm.spanwiz.library
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontFamily // New import
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.BaselineShift
@@ -227,6 +228,54 @@ class SpanWizTest {
     }
 
     @Test
+    fun `createFromTextWithSpans applies Superscript style with custom font size`() {
+        val colorHex = "#00FF00"
+        val customFontSize = 12
+        val textWithSpans = TextWithSpans(
+            text = "Super^custom",
+            spans = listOf(com.pavanpm.spanwiz.library.models.SpanStyle(
+                start = 5,
+                end = 12,
+                style = TextSpanType.Superscript,
+                color = colorHex,
+                fontSize = customFontSize // Provide custom font size
+            ))
+        )
+        val annotatedString = spanWiz.createFromTextWithSpans(textWithSpans)
+        val styles = annotatedString.spanStyles
+        assertTrue(styles.any {
+            it.item.baselineShift == BaselineShift.Superscript &&
+            it.item.fontSize == customFontSize.sp && // Check for custom font size
+            it.item.color == Color(android.graphics.Color.parseColor(colorHex)) &&
+            it.start == 5 && it.end == 12
+        })
+    }
+
+    @Test
+    fun `createFromTextWithSpans applies Subscript style with custom font size`() {
+        val colorHex = "#0000FF"
+        val customFontSize = 10
+        val textWithSpans = TextWithSpans(
+            text = "Sub_custom",
+            spans = listOf(com.pavanpm.spanwiz.library.models.SpanStyle(
+                start = 3,
+                end = 10,
+                style = TextSpanType.Subscript,
+                color = colorHex,
+                fontSize = customFontSize // Provide custom font size
+            ))
+        )
+        val annotatedString = spanWiz.createFromTextWithSpans(textWithSpans)
+        val styles = annotatedString.spanStyles
+        assertTrue(styles.any {
+            it.item.baselineShift == BaselineShift.Subscript &&
+            it.item.fontSize == customFontSize.sp && // Check for custom font size
+            it.item.color == Color(android.graphics.Color.parseColor(colorHex)) &&
+            it.start == 3 && it.end == 10
+        })
+    }
+
+    @Test
     fun `createFromTextWithSpans applies LetterSpacing style`() {
         val textWithSpans = TextWithSpans(
             text = "Wide Text",
@@ -238,21 +287,110 @@ class SpanWizTest {
     }
 
     @Test
-    fun `createFromTextWithSpans applies Shadow style with constant offset`() {
+    fun `createFromTextWithSpans applies Shadow style with default offset`() { // Renamed
         val shadowColorHex = "#888888"
+        // Ensure no shadowOffsetX or shadowOffsetY are provided in this model
         val textWithSpans = TextWithSpans(
             text = "Shadow Text",
-            spans = listOf(com.pavanpm.spanwiz.library.models.SpanStyle(0, 6, TextSpanType.Shadow, shadow = shadowColorHex, radius = 2.0f))
+            spans = listOf(com.pavanpm.spanwiz.library.models.SpanStyle(
+                start = 0, end = 6, style = TextSpanType.Shadow,
+                shadow = shadowColorHex, radius = 2.0f
+                // shadowOffsetX and shadowOffsetY are null by default
+            ))
         )
         val annotatedString = spanWiz.createFromTextWithSpans(textWithSpans)
         val styles = annotatedString.spanStyles
-        val defaultShadowOffset = androidx.compose.ui.geometry.Offset(5.0f, 10.0f) // from SpanWiz companion
+        // DEFAULT_SHADOW_OFFSET is already a private val in SpanWiz companion,
+        // so we might need to redefine it here for assertion or assert against its known values.
+        // For simplicity, let's use its known values (5.0f, 10.0f) or make it accessible for test.
+        // Assuming SpanWiz.DEFAULT_SHADOW_OFFSET is accessible or its values are known:
+        val expectedDefaultOffset = androidx.compose.ui.geometry.Offset(5.0f, 10.0f)
         assertTrue(styles.any {
             it.item.shadow?.color == Color(android.graphics.Color.parseColor(shadowColorHex)) &&
-            it.item.shadow?.offset == defaultShadowOffset && // Check for constant
+            it.item.shadow?.offset == expectedDefaultOffset &&
             it.item.shadow?.blurRadius == 2.0f &&
             it.start == 0 && it.end == 6
         })
+    }
+
+    @Test
+    fun `createFromTextWithSpans applies Shadow style with custom offset`() {
+        val shadowColorHex = "#ABCDEF"
+        val customOffsetX = 7.0f
+        val customOffsetY = 12.0f
+        val textWithSpans = TextWithSpans(
+            text = "Custom Shadow",
+            spans = listOf(com.pavanpm.spanwiz.library.models.SpanStyle(
+                start = 0,
+                end = 13,
+                style = TextSpanType.Shadow,
+                shadow = shadowColorHex,
+                radius = 3.0f,
+                shadowOffsetX = customOffsetX, // Provide custom offset X
+                shadowOffsetY = customOffsetY  // Provide custom offset Y
+            ))
+        )
+        val annotatedString = spanWiz.createFromTextWithSpans(textWithSpans)
+        val styles = annotatedString.spanStyles
+        val expectedCustomOffset = androidx.compose.ui.geometry.Offset(customOffsetX, customOffsetY)
+        assertTrue(styles.any {
+            it.item.shadow?.color == Color(android.graphics.Color.parseColor(shadowColorHex)) &&
+            it.item.shadow?.offset == expectedCustomOffset && // Check for custom offset
+            it.item.shadow?.blurRadius == 3.0f &&
+            it.start == 0 && it.end == 13
+        })
+    }
+
+    @Test
+    fun `createFromTextWithSpans applies fontFamily Serif`() {
+        val textWithSpans = TextWithSpans("Serif Text", listOf(
+            com.pavanpm.spanwiz.library.models.SpanStyle(0, 5, TextSpanType.Custom, fontFamily = "serif")
+        ))
+        val annotatedString = spanWiz.createFromTextWithSpans(textWithSpans)
+        val styles = annotatedString.spanStyles
+        assertTrue(styles.any { it.item.fontFamily == FontFamily.Serif && it.start == 0 && it.end == 5 })
+    }
+
+    @Test
+    fun `createFromTextWithSpans applies fontFamily SansSerif`() {
+        val textWithSpans = TextWithSpans("SansSerif Text", listOf(
+            com.pavanpm.spanwiz.library.models.SpanStyle(0, 9, TextSpanType.Custom, fontFamily = "sans-serif")
+        ))
+        val annotatedString = spanWiz.createFromTextWithSpans(textWithSpans)
+        val styles = annotatedString.spanStyles
+        assertTrue(styles.any { it.item.fontFamily == FontFamily.SansSerif && it.start == 0 && it.end == 9 })
+    }
+
+    @Test
+    fun `createFromTextWithSpans applies fontWeight W300 (Light)`() {
+        val textWithSpans = TextWithSpans("Light Text", listOf(
+            com.pavanpm.spanwiz.library.models.SpanStyle(0, 5, TextSpanType.Custom, fontWeight = 300)
+        ))
+        val annotatedString = spanWiz.createFromTextWithSpans(textWithSpans)
+        val styles = annotatedString.spanStyles
+        assertTrue(styles.any { it.item.fontWeight == FontWeight.W300 && it.start == 0 && it.end == 5 })
+    }
+
+    @Test
+    fun `createFromTextWithSpans applies fontWeight W700 (Bold) explicitly`() {
+        val textWithSpans = TextWithSpans("Explicit Bold", listOf(
+            com.pavanpm.spanwiz.library.models.SpanStyle(0, 13, TextSpanType.Custom, fontWeight = 700)
+        ))
+        val annotatedString = spanWiz.createFromTextWithSpans(textWithSpans)
+        val styles = annotatedString.spanStyles
+        assertTrue(styles.any { it.item.fontWeight == FontWeight.Bold && it.start == 0 && it.end == 13 })
+    }
+
+    @Test
+    fun `fontWeight from span model overrides TextSpanType Bold`() {
+        val textWithSpans = TextWithSpans("Not Really Bold", listOf(
+            com.pavanpm.spanwiz.library.models.SpanStyle(0, 15, TextSpanType.Bold, fontWeight = 300) // Type is Bold, but fontWeight is Light
+        ))
+        val annotatedString = spanWiz.createFromTextWithSpans(textWithSpans)
+        val styles = annotatedString.spanStyles
+        // Check that W300 is applied, not the default Bold from TextSpanType.Bold
+        assertTrue(styles.any { it.item.fontWeight == FontWeight.W300 && it.start == 0 && it.end == 15 })
+        assertFalse(styles.any { it.item.fontWeight == FontWeight.Bold && styles.none { inner -> inner.item.fontWeight == FontWeight.W300 } && it.start == 0 && it.end == 15 })
     }
 
     @Test
