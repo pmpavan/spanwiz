@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.ksp)
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.23" // ADD THIS
     alias(libs.plugins.compose.compiler)
     id(libs.plugins.maven.publish.get().pluginId)
     id(libs.plugins.dokka.gradle.plugin.get().pluginId)
@@ -56,6 +57,9 @@ dependencies {
 
     // Gson for JSON parsing (NEWLY ADDED)
     implementation("com.google.code.gson:gson:2.10.1")
+
+    // Kotlinx Serialization (NEWLY ADDED)
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

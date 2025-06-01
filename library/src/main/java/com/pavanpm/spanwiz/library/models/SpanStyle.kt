@@ -1,10 +1,12 @@
 package com.pavanpm.spanwiz.library.models
 
 import com.pavanpm.spanwiz.library.TextSpanType
+// import com.squareup.moshi.JsonClass // Keep if still needed for Moshi
+import kotlinx.serialization.Serializable // ADD THIS IMPORT
 import com.squareup.moshi.JsonClass
 
-@JsonClass(generateAdapter = true)
-//@JsonSerializable
+@Serializable // ADD THIS ANNOTATION
+@JsonClass(generateAdapter = true) // Moshi annotation
 data class SpanStyle(
     val start: Int,
     val end: Int,
