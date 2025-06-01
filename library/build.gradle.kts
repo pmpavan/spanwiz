@@ -53,6 +53,10 @@ dependencies {
     implementation(libs.androidx.foundation.android)
     api(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)
+
+    // Gson for JSON parsing (NEWLY ADDED)
+    implementation("com.google.code.gson:gson:2.10.1")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
