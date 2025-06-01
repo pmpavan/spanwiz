@@ -36,8 +36,10 @@ import androidx.compose.ui.unit.dp
 import com.pavanpm.spanwiz.library.AnnotatedTextView
 import com.pavanpm.spanwiz.library.SpanWiz
 import com.pavanpm.spanwiz.library.SpanWiz.Companion.URL_TAG
+import com.pavanpm.spanwiz.library.MoshiJsonParser // Added import
 import com.pavanpm.spanwiz.ui.theme.SpanWizTheme
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory // Added import
 
 class MainActivity : ComponentActivity() {
 
@@ -89,7 +91,38 @@ fun HomePage() {
 private fun List(
     innerPadding: PaddingValues
 ) {
-    val spanWiz = SpanWiz(Moshi.Builder().build())
+    // Updated SpanWiz Instantiation
+    val moshiInstance = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+    val jsonParser = MoshiJsonParser(moshiInstance)
+    val spanWiz = SpanWiz(jsonParser)
+
+    val comprehensiveJsonString = """
+   {
+     "text": "Explore SpanWiz: Bold, Italic, Underline, Strikethrough. Clickable Link. Colored Text & BGColor. Custom FontSize. Super^script & Sub_script with custom sizes. Wide Letters. Shadow default & custom. Serif Font, Monospace Font, Cursive Font. Light Weight, ExtraBold Weight. Bold+Serif+Light.",
+     "spans": [
+       { "start": 19, "end": 23, "style": "Bold" },
+       { "start": 25, "end": 31, "style": "Italic" },
+       { "start": 33, "end": 42, "style": "Underline" },
+       { "start": 44, "end": 57, "style": "Strikethrough" },
+       { "start": 59, "end": 73, "style": "Clickable", "link": "https://developer.android.com" },
+       { "start": 75, "end": 87, "style": "Color", "color": "#FF00FF" },
+       { "start": 90, "end": 97, "style": "BackgroundColor", "backgroundColor": "#FFFF00" },
+       { "start": 99, "end": 113, "style": "FontSize", "fontSize": 24 },
+       { "start": 115, "end": 120, "style": "Superscript", "color": "#0000FF", "fontSize": 10 },
+       { "start": 129, "end": 133, "style": "Subscript", "color": "#00AA00", "fontSize": 12 },
+       { "start": 154, "end": 166, "style": "LetterSpacing", "letterSpacing": 0.2 },
+       { "start": 168, "end": 182, "style": "Shadow", "shadow": "#888888", "radius": 2.0 },
+       { "start": 185, "end": 192, "style": "Shadow", "shadow": "#555555", "radius": 3.0, "shadowOffsetX": 2.0, "shadowOffsetY": 4.0 },
+       { "start": 194, "end": 204, "style": "Custom", "fontFamily": "serif" },
+       { "start": 206, "end": 220, "style": "Custom", "fontFamily": "monospace" },
+       { "start": 222, "end": 234, "style": "Custom", "fontFamily": "cursive" },
+       { "start": 236, "end": 248, "style": "Custom", "fontWeight": 300 },
+       { "start": 250, "end": 265, "style": "Custom", "fontWeight": 800 },
+       { "start": 267, "end": 282, "style": "Bold", "fontFamily": "serif", "fontWeight": 300 }
+     ]
+   }
+   """
+
     val clickableJson =
         "{\"text\":\"Hello Android! I'm URL. (Click Me)\",\"spans\":[{\"style\":\"Clickable\",\"start\":19,\"end\":22,\"link\":\"https://www.google.com\"}, {\"style\":\"Clickable\",\"start\":25,\"end\":33,\"spanTag\":\"Click Me\",\"link\":\"https://www.outlook.com\"}]}"
 
@@ -105,13 +138,43 @@ private fun List(
 
     val clickableString = spanWiz.createFromJson(clickableJson)!!
     val context = LocalContext.current
+    val uriHandler: UriHandler = LocalUriHandler.current // Hoisted for reuse
+
     LazyColumn(
         modifier = Modifier
             .padding(innerPadding),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item {
-            val uriHandler: UriHandler = LocalUriHandler.current
+            Text(
+                text = "Comprehensive Showcase:",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp)
+            )
+            AnnotatedTextView(
+                spanWiz = spanWiz,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                jsonString = comprehensiveJsonString,
+                onClick = { _, _, annotatedTag ->
+                    Toast.makeText(
+                        context,
+                        annotatedTag?.item ?: "Clicked on text",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    annotatedTag?.let {
+                        if (it.tag == URL_TAG) {
+                            uriHandler.openUri(it.item)
+                        }
+                    }
+                }
+            )
+            HorizontalDivider()
+        }
+
+        item {
+            // val uriHandler: UriHandler = LocalUriHandler.current // No longer needed here
 
             ClickableText(
                 modifier = Modifier
@@ -145,34 +208,25 @@ private fun List(
                 }
             )
             HorizontalDivider()
-            AnnotatedTextView(
+            AnnotatedTextView( // This is the existing AnnotatedTextView for clickableJson
                 spanWiz = spanWiz,
                 modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth(),
-                annotatedTags = listOf("Click Me"),
-                textWithSpans = spanWiz.parseJson(clickableJson),
-                onClick = { offset, tag, annotatedTag ->
+                annotatedTags = listOf("Click Me"), // Keep this for specific tags if needed
+                jsonString = clickableJson, // Use jsonString instead of textWithSpans
+                onClick = { _, tag, annotatedTag -> // Simplified onClick, can be expanded
+                    val itemClicked = annotatedTag?.item ?: "Clicked on text"
+                    val tagInfo = tag ?: "no tag"
                     Toast.makeText(
                         context,
-                        annotatedTag?.item,
+                        "Item: $itemClicked, Tag: $tagInfo",
                         Toast.LENGTH_SHORT
                     ).show()
-                    if (annotatedTag?.tag != null && annotatedTag.tag != URL_TAG) {
-                        uriHandler.openUri(annotatedTag.item)
-                    }
-                    if (tag != null) {
-                        clickableString
-                            .getStringAnnotations(tag, offset, offset)
-                            .firstOrNull()?.let { stringAnnotation ->
-                                println(stringAnnotation.item)
-                                Toast.makeText(
-                                    context,
-                                    stringAnnotation.item,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                uriHandler.openUri(stringAnnotation.item)
-                            }
+                    annotatedTag?.let {
+                         if (it.tag == URL_TAG || tag == "Click Me") { // Example handling for specific tags
+                            uriHandler.openUri(it.item)
+                        }
                     }
                 }
             )
@@ -184,9 +238,8 @@ private fun List(
                         modifier = Modifier
                             .padding(16.dp)
                             .fillMaxWidth(),
-                        annotatedTags = listOf("Click Me"),
-                        textWithSpans = spanWiz.parseJson(json),
-                        onClick = { offset, tag, annotatedTag ->
+                        jsonString = json, // Use jsonString
+                        onClick = { _, _, annotatedTag ->
                             Toast.makeText(
                                 context,
                                 annotatedTag?.item,
