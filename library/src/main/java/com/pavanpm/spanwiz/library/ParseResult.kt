@@ -7,18 +7,18 @@ import com.pavanpm.spanwiz.library.models.TextWithSpans
 
 /**
  * Represents the result of a JSON parsing operation.
- * It can be either a [Success] containing the parsed data, or an [Error]
- * containing details about the parsing failure.
+ * Can be either a [Success] containing the parsed [TextWithSpans] data,
+ * or an [Error] containing details about the parsing failure.
  */
 public sealed class ParseResult {
     /**
-     * Represents a successful parsing operation.
-     * @property data The parsed data of type [TextWithSpans].
+     * Indicates successful parsing.
+     * @property data The parsed [TextWithSpans] object.
      */
     public data class Success(val data: TextWithSpans) : ParseResult()
 
     /**
-     * Represents a failed parsing operation.
+     * Indicates a parsing failure.
      * @property exception The exception that occurred during parsing.
      * @property message An optional descriptive message about the error.
      */

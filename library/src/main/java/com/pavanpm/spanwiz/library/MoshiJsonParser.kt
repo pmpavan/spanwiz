@@ -7,7 +7,8 @@ import com.squareup.moshi.Moshi
 
 /**
  * A [JsonParser] implementation that uses the Moshi library for JSON processing.
- * @param moshi The Moshi instance to use for parsing.
+ * @param moshi The Moshi instance to use for parsing. It's recommended that this instance
+ *              is configured with `KotlinJsonAdapterFactory` for optimal Kotlin class support.
  */
 class MoshiJsonParser(private val moshi: Moshi) : JsonParser {
 

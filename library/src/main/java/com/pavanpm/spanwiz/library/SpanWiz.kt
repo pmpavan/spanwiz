@@ -20,6 +20,14 @@ import android.util.Log // Added for logging
 
 // ParseResult is now defined in ParseResult.kt
 
+/**
+ * Main class for SpanWiz library. Responsible for creating [AnnotatedString] instances
+ * from text and span definitions.
+ *
+ * @param jsonParser An implementation of [JsonParser] (e.g., [MoshiJsonParser])
+ *                   to handle the deserialization of JSON strings into
+ *                   [com.pavanpm.spanwiz.library.models.TextWithSpans] objects.
+ */
 class SpanWiz(private val jsonParser: JsonParser) { // Changed constructor parameter
 
     private val colorCache = mutableMapOf<String, androidx.compose.ui.graphics.Color>()
