@@ -65,7 +65,28 @@ dependencies {
 
 SpanWiz now features a flexible JSON parsing system. It uses a `JsonParser` interface, allowing you to choose which underlying JSON parsing library you want to use. We provide implementations for three popular libraries: Moshi, Gson, and Kotlinx Serialization.
 
-**Note on Dependencies:** Currently, the main `spanwiz` library artifact includes dependencies for Moshi, Gson, and Kotlinx Serialization. Future versions may separate these into optional modules to allow for more granular dependency management and app size optimization. For now, if you are concerned about including all three, you may need to use dependency exclusion mechanisms in your build configuration if your build system supports it effectively for transitive dependencies.
+**Important Note on Dependencies and App Size:** Currently, the main `spanwiz` library artifact (`com.github.pmpavan.spanwiz:library`) includes direct dependencies for Moshi, Gson, and Kotlinx Serialization. This means that when you add SpanWiz to your project, all three JSON processing libraries are included, which can contribute to increased app size.
+
+### Future Modularization (Recommended for App Size Optimization)
+
+To allow for true optional dependencies and ensure you only include the JSON parsing library you actually use, future development of SpanWiz should focus on splitting the library into a multi-module structure:
+
+*   **`spanwiz-core`**: This module would contain the core SpanWiz logic (including `SpanWiz`, `AnnotatedTextView`), the `JsonParser` interface, and data models. It would have *no* direct dependencies on specific JSON libraries like Moshi, Gson, or Kotlinx Serialization.
+*   **`spanwiz-parser-moshi`**: This module would depend on `spanwiz-core` and add the Moshi library. It would provide the `MoshiJsonParser` implementation.
+*   **`spanwiz-parser-gson`**: This module would depend on `spanwiz-core` and add the Gson library. It would provide the `GsonJsonParser` implementation.
+*   **`spanwiz-parser-kotlinx`**: This module would depend on `spanwiz-core` and add the Kotlinx Serialization library. It would provide the `KotlinxJsonParser` implementation.
+
+With such a setup, your `build.gradle` dependencies would look like this, giving you fine-grained control:
+```gradle
+dependencies {
+  implementation 'com.github.pavanpm.spanwiz:spanwiz-core:VERSION'
+  // Choose only ONE of the following parser implementations:
+  implementation 'com.github.pavanpm.spanwiz:spanwiz-parser-moshi:VERSION'
+  // implementation 'com.github.pavanpm.spanwiz:spanwiz-parser-gson:VERSION'
+  // implementation 'com.github.pavanpm.spanwiz:spanwiz-parser-kotlinx:VERSION'
+}
+```
+This modular approach is the recommended path forward for optimal app size and clean dependency management. Until this modularization is implemented, users highly concerned about including all three parsers may need to investigate advanced dependency exclusion mechanisms in their build configuration, though this can be complex and error-prone.
 
 ### Using Moshi (Default in previous versions)
 To use SpanWiz with Moshi, create a `MoshiJsonParser` instance and pass it to `SpanWiz`:
