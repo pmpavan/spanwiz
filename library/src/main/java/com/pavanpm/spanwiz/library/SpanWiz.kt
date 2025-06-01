@@ -126,17 +126,29 @@ class SpanWiz(private val moshi: Moshi) {
                         "serif" -> FontFamily.Serif
                         "monospace" -> FontFamily.Monospace
                         "cursive" -> FontFamily.Cursive
-                        else -> null // Or some other default/logging
+                        else -> {
+                            Log.w("SpanWiz", "Unsupported fontFamily: '$familyName'. No specific font family will be applied. Supported values are 'sans-serif', 'serif', 'monospace', 'cursive'.")
+                            null // Explicitly null for clarity
+                        }
                     }
                 }
 
                 // Apply fontWeight from span model (this will override fontWeight from TextSpanType.Bold if both are present)
                 span.fontWeight?.let { weight ->
                     styleFontWeight = when (weight) {
-                        100 -> FontWeight.W100; 200 -> FontWeight.W200; 300 -> FontWeight.W300;
-                        400 -> FontWeight.W400; 500 -> FontWeight.W500; 600 -> FontWeight.W600;
-                        700 -> FontWeight.W700; 800 -> FontWeight.W800; 900 -> FontWeight.W900;
-                        else -> styleFontWeight // Keep existing from TextSpanType.Bold or null
+                        100 -> FontWeight.W100
+                        200 -> FontWeight.W200
+                        300 -> FontWeight.W300
+                        400 -> FontWeight.W400 // Normal
+                        500 -> FontWeight.W500 // Medium
+                        600 -> FontWeight.W600 // SemiBold
+                        700 -> FontWeight.W700 // Bold
+                        800 -> FontWeight.W800 // ExtraBold
+                        900 -> FontWeight.W900 // Black
+                        else -> {
+                            Log.w("SpanWiz", "Unsupported fontWeight: '$weight'. The default or type-inferred font weight will be used. Supported values are 100-900 in increments of 100.")
+                            styleFontWeight // Keep existing from TextSpanType.Bold or null, don't change it due to invalid input
+                        }
                     }
                 }
 
