@@ -10,6 +10,7 @@ import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
 import com.pavanpm.spanwiz.library.models.TextWithSpans
+import com.pavanpm.spanwiz.library.parser.moshi.MoshiJsonParser // Updated import
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import org.junit.Assert.*

@@ -24,7 +24,10 @@ import android.util.Log // Added for logging
  * Main class for SpanWiz library. Responsible for creating [AnnotatedString] instances
  * from text and span definitions.
  *
- * @param jsonParser An implementation of [JsonParser] (e.g., [MoshiJsonParser])
+ * @param jsonParser An implementation of [JsonParser] (e.g.,
+ *                   [com.pavanpm.spanwiz.library.parser.moshi.MoshiJsonParser],
+ *                   [com.pavanpm.spanwiz.library.parser.gson.GsonJsonParser], or
+ *                   [com.pavanpm.spanwiz.library.parser.kotlinx.KotlinxJsonParser])
  *                   to handle the deserialization of JSON strings into
  *                   [com.pavanpm.spanwiz.library.models.TextWithSpans] objects.
  */

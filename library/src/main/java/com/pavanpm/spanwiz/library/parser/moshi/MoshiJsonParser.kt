@@ -1,6 +1,8 @@
-package com.pavanpm.spanwiz.library
+package com.pavanpm.spanwiz.library.parser.moshi // Updated package
 
-import android.util.Log // For logging potential errors
+import android.util.Log
+import com.pavanpm.spanwiz.library.JsonParser // Added import
+import com.pavanpm.spanwiz.library.ParseResult // Added import
 import com.pavanpm.spanwiz.library.models.TextWithSpans
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
@@ -13,17 +15,15 @@ import com.squareup.moshi.Moshi
 class MoshiJsonParser(private val moshi: Moshi) : JsonParser {
 
     override fun parse(jsonString: String): ParseResult {
-        // This logic is moved from the original SpanWiz.parseJson method
         val adapter: JsonAdapter<TextWithSpans> = moshi.adapter(TextWithSpans::class.java)
         return try {
             adapter.fromJson(jsonString)?.let {
                 ParseResult.Success(it)
             } ?: ParseResult.Error(
-                NullPointerException("Parsed JSON resulted in null object"), // More specific exception
+                NullPointerException("Parsed JSON resulted in null object"),
                 "Moshi adapter returned null for a non-null type TextWithSpans from JSON string: '$jsonString'"
             )
         } catch (e: Exception) {
-            // Log the error for debugging purposes. The error is also propagated via ParseResult.Error.
             Log.e("MoshiJsonParser", "Failed to parse JSON string with Moshi: $jsonString", e)
             ParseResult.Error(e, "Moshi parsing failed: ${e.message}")
         }

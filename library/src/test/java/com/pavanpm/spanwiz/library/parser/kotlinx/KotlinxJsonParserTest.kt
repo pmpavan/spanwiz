@@ -1,6 +1,9 @@
-package com.pavanpm.spanwiz.library
+package com.pavanpm.spanwiz.library.parser.kotlinx // Updated package
 
 import com.pavanpm.spanwiz.library.models.TextWithSpans
+import com.pavanpm.spanwiz.library.ParseResult // Added import
+import com.pavanpm.spanwiz.library.TextSpanType // Added import
+import com.pavanpm.spanwiz.library.parser.kotlinx.KotlinxJsonParser // Updated import for the parser
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import org.junit.Assert.*
@@ -9,12 +12,11 @@ import org.junit.Test
 
 class KotlinxJsonParserTest {
 
-    // private lateinit var kotlinxJson: Json // Not needed if using parser's default
-    private lateinit var kotlinxJsonParserWithDefaults: KotlinxJsonParser
+    private lateinit var kotlinxJsonParserWithDefaults: KotlinxJsonParser // Type now refers to the moved class
 
     @Before
     fun setUp() {
-        kotlinxJsonParserWithDefaults = KotlinxJsonParser() // Uses its own default Json instance
+        kotlinxJsonParserWithDefaults = KotlinxJsonParser()
     }
 
     @Test

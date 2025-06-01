@@ -1,9 +1,12 @@
-package com.pavanpm.spanwiz.library
+package com.pavanpm.spanwiz.library.parser.gson // Updated package
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonSyntaxException
 import com.pavanpm.spanwiz.library.models.TextWithSpans
+import com.pavanpm.spanwiz.library.ParseResult // Added import
+import com.pavanpm.spanwiz.library.TextSpanType // Added import
+import com.pavanpm.spanwiz.library.parser.gson.GsonJsonParser // Updated import for the parser
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -11,7 +14,7 @@ import org.junit.Test
 class GsonJsonParserTest {
 
     private lateinit var gson: Gson
-    private lateinit var gsonJsonParser: GsonJsonParser
+    private lateinit var gsonJsonParser: GsonJsonParser // Type now refers to the moved class
 
     @Before
     fun setUp() {

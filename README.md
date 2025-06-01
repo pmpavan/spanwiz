@@ -61,6 +61,68 @@ dependencies {
 }
 ```
 
+## Choosing a JSON Parser
+
+SpanWiz now features a flexible JSON parsing system. It uses a `JsonParser` interface, allowing you to choose which underlying JSON parsing library you want to use. We provide implementations for three popular libraries: Moshi, Gson, and Kotlinx Serialization.
+
+**Note on Dependencies:** Currently, the main `spanwiz` library artifact includes dependencies for Moshi, Gson, and Kotlinx Serialization. Future versions may separate these into optional modules to allow for more granular dependency management and app size optimization. For now, if you are concerned about including all three, you may need to use dependency exclusion mechanisms in your build configuration if your build system supports it effectively for transitive dependencies.
+
+### Using Moshi (Default in previous versions)
+To use SpanWiz with Moshi, create a `MoshiJsonParser` instance and pass it to `SpanWiz`:
+
+```kotlin
+import com.pavanpm.spanwiz.library.SpanWiz
+import com.pavanpm.spanwiz.library.parser.moshi.MoshiJsonParser // Updated import
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+
+// ...
+val moshi = Moshi.Builder()
+    .add(KotlinJsonAdapterFactory()) // Recommended for Kotlin projects
+    .build()
+val moshiJsonParser = MoshiJsonParser(moshi)
+val spanWizWithMoshi = SpanWiz(moshiJsonParser)
+
+// Example usage:
+// val annotatedString = spanWizWithMoshi.createFromJson(yourJsonString)
+```
+
+### Using Gson
+To use SpanWiz with Gson, create a `GsonJsonParser` instance:
+
+```kotlin
+import com.pavanpm.spanwiz.library.SpanWiz
+import com.pavanpm.spanwiz.library.parser.gson.GsonJsonParser // Updated import
+import com.google.gson.Gson
+
+// ...
+val gson = Gson() // Or use new GsonBuilder().create() for custom configuration
+val gsonJsonParser = GsonJsonParser(gson)
+val spanWizWithGson = SpanWiz(gsonJsonParser)
+
+// Example usage:
+// val annotatedString = spanWizWithGson.createFromJson(yourJsonString)
+```
+
+### Using Kotlinx Serialization
+To use SpanWiz with Kotlinx Serialization, create a `KotlinxJsonParser` instance:
+
+```kotlin
+import com.pavanpm.spanwiz.library.SpanWiz
+import com.pavanpm.spanwiz.library.parser.kotlinx.KotlinxJsonParser // Updated import
+import kotlinx.serialization.json.Json
+
+// ...
+// Uses the default Json configuration in KotlinxJsonParser (Json { ignoreUnknownKeys = true })
+val kotlinxJsonParser = KotlinxJsonParser()
+// Or, provide your own configured Json instance:
+// val customKotlinxJson = Json { encodeDefaults = true; explicitNulls = false }
+// val kotlinxJsonParserWithCustomConfig = KotlinxJsonParser(customKotlinxJson)
+val spanWizWithKotlinx = SpanWiz(kotlinxJsonParser)
+
+// Example usage:
+// val annotatedString = spanWizWithKotlinx.createFromJson(yourJsonString)
+```
 
 ## Usage
 ### Json Format
@@ -142,40 +204,73 @@ dependencies {
 ```
 
 ### Create a SpanWiz instance
+To use SpanWiz, you first need an instance of a `JsonParser` implementation (e.g., `MoshiJsonParser`, `GsonJsonParser`, or `KotlinxJsonParser`). See the "Choosing a JSON Parser" section for details.
+
+Here's an example using `MoshiJsonParser`:
 ```kotlin
-    val spanWiz = SpanWiz(moshiInstance)
+import com.pavanpm.spanwiz.library.SpanWiz
+import com.pavanpm.spanwiz.library.parser.moshi.MoshiJsonParser
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+
+// Configure your chosen JSON library instance
+val moshiInstance = Moshi.Builder()
+    .add(KotlinJsonAdapterFactory())
+    .build()
+
+// Create the corresponding JsonParser
+val jsonParser = MoshiJsonParser(moshiInstance)
+
+// Create SpanWiz with the parser
+val spanWiz = SpanWiz(jsonParser)
 ```
 
 ### Building using AnnotatedTextView Composable
+The `AnnotatedTextView` composable is the recommended way to display your styled text. It handles parsing and rendering.
 ```kotlin
+    // Assuming 'spanWiz' is initialized as shown above
+    // and 'yourJsonString' is the JSON data from your backend.
+
     AnnotatedTextView(
-                spanWiz = spanWiz,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                annotatedTags = listOf("Click Me"),
-                textWithSpans = spanWiz.parseJson(JsonString),
-                onClick = { offset, tag, annotatedTag ->
-                    Toast.makeText(
-                        context,
-                        annotatedTag?.item,
-                        Toast.LENGTH_SHORT
-                    ).show()
+        spanWiz = spanWiz,
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
+        jsonString = yourJsonString, // Pass the JSON string directly
+        // annotatedTags = listOf("YourCustomTag"), // Optional: for handling custom annotations
+        onClick = { offset, tag, annotatedTag ->
+            // Handle clicks on annotated parts of the text
+            // For example, open a URL if a URL_TAG is present
+            annotatedTag?.let {
+                if (it.tag == SpanWiz.URL_TAG) {
+                    // uriHandler.openUri(it.item) // Requires LocalUriHandler.current
                 }
-            )
+            }
+            Toast.makeText(
+                context, // Requires LocalContext.current
+                "Clicked: ${annotatedTag?.item ?: "text"}",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    )
 ```
 
 ### Building manually
-
-### Approach 1
+If you need more control, you can parse the JSON and create the `AnnotatedString` manually:
 ```kotlin
-    val annotatedString = spanWiz.createFromJson(jsonString)
-```
+    // Assuming 'spanWiz' is initialized and 'yourJsonString' is available
+    val annotatedString: AnnotatedString? = spanWiz.createFromJson(yourJsonString)
 
-### Approach 2
-```kotlin
-        val textWithSpans = parseJson(jsonString)
-        val annotatedString = textWithSpans?.let { applyFromTextWithSpans(textWithSpans) }
+    // If parsing was successful, 'annotatedString' can be used in a Text composable
+    if (annotatedString != null) {
+        Text(
+            text = annotatedString,
+            // ... other Text parameters
+        )
+    } else {
+        // Handle JSON parsing error, e.g., display placeholder text
+        Text("Error loading content.")
+    }
 ```
 
 ### Apply the annotated string to the Text composable
